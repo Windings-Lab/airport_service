@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.core.validators import MinValueValidator
 from django.db.models import (
     Model,
     CharField,
@@ -8,7 +9,11 @@ from django.db.models import (
     ManyToManyField,
     SET_NULL,
     CASCADE,
+    UniqueConstraint,
+    Deferrable
 )
+
+from airport.validators import fields_cant_be_same
 
 
 class Flight(Model):
@@ -19,6 +24,13 @@ class Flight(Model):
     crew = ManyToManyField("Crew", related_name="flights")
     departure_time = DateTimeField()
     arrival_time = DateTimeField()
+
+    def clean(self):
+        fields_cant_be_same(self.departure_time, self.arrival_time)
+
+    def save(self, *args,**kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
 
 
 class Crew(Model):
@@ -35,18 +47,22 @@ class Crew(Model):
 
 class Airplane(Model):
     name = CharField(max_length=100)
-    rows = IntegerField()
-    seats_in_row = IntegerField()
+    rows = IntegerField(validators=[MinValueValidator(1)])
+    seats_in_row = IntegerField(validators=[MinValueValidator(1)])
     airplane_type = ForeignKey(
         "AirplaneType", on_delete=CASCADE, related_name="airplanes"
     )
+
+    @property
+    def capacity(self):
+        return self.rows * self.seats_in_row
 
     def __str__(self):
         return self.name
 
 
 class AirplaneType(Model):
-    name = CharField(max_length=100)
+    name = CharField(max_length=100, unique=True)
 
     def __str__(self):
         return self.name
@@ -60,14 +76,21 @@ class Order(Model):
 
 
 class Ticket(Model):
-    row = IntegerField()
-    seat = IntegerField()
+    row = IntegerField(validators=[MinValueValidator(1)])
+    seat = IntegerField(validators=[MinValueValidator(1)])
     flight = ForeignKey("Flight", on_delete=CASCADE, related_name="tickets")
     order = ForeignKey("Order", on_delete=CASCADE, related_name="tickets")
 
+    class Meta:
+        constraints = [UniqueConstraint(
+            name="unique_ticket",
+            fields=["row", "seat"],
+            deferrable=Deferrable.IMMEDIATE
+        )]
+
 
 class Airport(Model):
-    name = CharField(max_length=100)
+    name = CharField(max_length=100, unique=True)
     closest_big_city = CharField(max_length=100)
 
     def __str__(self):
@@ -81,4 +104,11 @@ class Route(Model):
     destination = ForeignKey(
         "Airport", on_delete=CASCADE, related_name="routes_to"
     )
-    distance = IntegerField()
+    distance = IntegerField(validators=[MinValueValidator(1)])
+
+    def clean(self):
+        fields_cant_be_same(self.source, self.destination)
+
+    def save(self, *args,**kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
