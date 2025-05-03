@@ -10,7 +10,6 @@ from django.db.models import (
     SET_NULL,
     CASCADE,
     UniqueConstraint,
-    Deferrable
 )
 
 from airport.validators import fields_cant_be_same
@@ -84,8 +83,7 @@ class Ticket(Model):
     class Meta:
         constraints = [UniqueConstraint(
             name="unique_ticket",
-            fields=["row", "seat"],
-            deferrable=Deferrable.IMMEDIATE
+            fields=["row", "seat"]
         )]
 
 
