@@ -26,7 +26,8 @@ INSTALLED_APPS = [
     # 3d-party
     "rest_framework",
     # apps
-    "airport.apps.TheatreConfig",
+    "account",
+    "airport.apps.AirportConfig",
 ]
 
 MIDDLEWARE = [
@@ -39,7 +40,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "airport_service.urls"
+ROOT_URLCONF = "app.urls"
 
 TEMPLATES = [
     {
@@ -56,7 +57,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "airport_service.wsgi.application"
+WSGI_APPLICATION = "app.wsgi.application"
 
 
 # Database

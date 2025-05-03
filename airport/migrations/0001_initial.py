@@ -165,9 +165,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "crew",
-                    models.ManyToManyField(
-                        related_name="flights", to="airport.crew"
-                    ),
+                    models.ManyToManyField(related_name="flights", to="airport.crew"),
                 ),
                 (
                     "route",

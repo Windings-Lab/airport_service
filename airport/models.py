@@ -4,17 +4,17 @@ if TYPE_CHECKING:
     from django_stubs_ext.db.models import TypedModelMeta
 else:
     TypedModelMeta = object
-from django.core.validators import MinValueValidator
 from django.conf import settings
+from django.core.validators import MinValueValidator
 from django.db.models import (
-    Model,
+    CASCADE,
+    SET_NULL,
     CharField,
     DateTimeField,
-    IntegerField,
     ForeignKey,
+    IntegerField,
     ManyToManyField,
-    SET_NULL,
-    CASCADE,
+    Model,
     UniqueConstraint,
 )
 
@@ -87,9 +87,7 @@ class Ticket(Model):
     order = ForeignKey("Order", on_delete=CASCADE, related_name="tickets")
 
     class Meta(TypedModelMeta):
-        constraints = [
-            UniqueConstraint(name="unique_ticket", fields=["row", "seat"])
-        ]
+        constraints = [UniqueConstraint(name="unique_ticket", fields=["row", "seat"])]
 
 
 class Airport(Model):
@@ -101,12 +99,8 @@ class Airport(Model):
 
 
 class Route(Model):
-    source = ForeignKey(
-        "Airport", on_delete=CASCADE, related_name="routes_from"
-    )
-    destination = ForeignKey(
-        "Airport", on_delete=CASCADE, related_name="routes_to"
-    )
+    source = ForeignKey("Airport", on_delete=CASCADE, related_name="routes_from")
+    destination = ForeignKey("Airport", on_delete=CASCADE, related_name="routes_to")
     distance = IntegerField(validators=[MinValueValidator(1)])
 
     def clean(self):

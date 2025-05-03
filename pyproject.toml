@@ -17,7 +17,11 @@ plugins = ["mypy_django_plugin.main"]
 dev = [
     "django-stubs[compatible-mypy]>=5.2.0",
     "djangorestframework-stubs[compatible-mypy]>=3.16.0",
+    "isort>=6.0.1",
 ]
 
 [tool.black]
-line-length = 79
+line-length = 88
+
+[tool.isort]
+profile = "black"

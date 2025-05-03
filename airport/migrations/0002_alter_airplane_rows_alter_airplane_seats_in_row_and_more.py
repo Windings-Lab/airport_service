@@ -60,9 +60,7 @@ class Migration(migrations.Migration):
         migrations.AddConstraint(
             model_name="ticket",
             constraint=models.UniqueConstraint(
-                deferrable=django.db.models.constraints.Deferrable[
-                    "IMMEDIATE"
-                ],
+                deferrable=django.db.models.constraints.Deferrable["IMMEDIATE"],
                 fields=("row", "seat"),
                 name="unique_ticket",
             ),
