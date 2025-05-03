@@ -54,7 +54,9 @@ class AirplaneType(Model):
 
 class Order(Model):
     created_at = DateTimeField()
-    user = ForeignKey(get_user_model(), on_delete=CASCADE, related_name="orders")
+    user = ForeignKey(
+        get_user_model(), on_delete=CASCADE, related_name="orders"
+    )
 
 
 class Ticket(Model):
@@ -74,5 +76,7 @@ class Airport(Model):
 
 class Route(Model):
     source = ForeignKey("Airport", on_delete=CASCADE, related_name="routes")
-    destination = ForeignKey("Airport", on_delete=CASCADE, related_name="routes")
+    destination = ForeignKey(
+        "Airport", on_delete=CASCADE, related_name="routes"
+    )
     distance = IntegerField()
