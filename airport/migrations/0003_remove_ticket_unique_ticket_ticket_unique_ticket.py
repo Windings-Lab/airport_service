@@ -6,7 +6,10 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("airport", "0002_alter_airplane_rows_alter_airplane_seats_in_row_and_more"),
+        (
+            "airport",
+            "0002_alter_airplane_rows_alter_airplane_seats_in_row_and_more",
+        ),
     ]
 
     operations = [

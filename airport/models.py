@@ -1,5 +1,11 @@
-from django.contrib.auth import get_user_model
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from django_stubs_ext.db.models import TypedModelMeta
+else:
+    TypedModelMeta = object
 from django.core.validators import MinValueValidator
+from django.conf import settings
 from django.db.models import (
     Model,
     CharField,
@@ -20,14 +26,14 @@ class Flight(Model):
     airplane = ForeignKey(
         "Airplane", on_delete=SET_NULL, null=True, related_name="flights"
     )
-    crew = ManyToManyField("Crew", related_name="flights")
+    crew = ManyToManyField("airport.Crew", related_name="flights")
     departure_time = DateTimeField()
     arrival_time = DateTimeField()
 
     def clean(self):
         fields_cant_be_same(self.departure_time, self.arrival_time)
 
-    def save(self, *args,**kwargs):
+    def save(self, *args, **kwargs):
         self.full_clean()
         super().save(*args, **kwargs)
 
@@ -70,7 +76,7 @@ class AirplaneType(Model):
 class Order(Model):
     created_at = DateTimeField()
     user = ForeignKey(
-        get_user_model(), on_delete=CASCADE, related_name="orders"
+        settings.AUTH_USER_MODEL, on_delete=CASCADE, related_name="orders"
     )
 
 
@@ -80,11 +86,10 @@ class Ticket(Model):
     flight = ForeignKey("Flight", on_delete=CASCADE, related_name="tickets")
     order = ForeignKey("Order", on_delete=CASCADE, related_name="tickets")
 
-    class Meta:
-        constraints = [UniqueConstraint(
-            name="unique_ticket",
-            fields=["row", "seat"]
-        )]
+    class Meta(TypedModelMeta):
+        constraints = [
+            UniqueConstraint(name="unique_ticket", fields=["row", "seat"])
+        ]
 
 
 class Airport(Model):
@@ -107,6 +112,6 @@ class Route(Model):
     def clean(self):
         fields_cant_be_same(self.source, self.destination)
 
-    def save(self, *args,**kwargs):
+    def save(self, *args, **kwargs):
         self.full_clean()
         super().save(*args, **kwargs)
