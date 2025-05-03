@@ -3,3 +3,4 @@
 __ecpycache__
 *.pyc
 .env
+db.sqlite3

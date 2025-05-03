@@ -75,8 +75,10 @@ class Airport(Model):
 
 
 class Route(Model):
-    source = ForeignKey("Airport", on_delete=CASCADE, related_name="routes")
+    source = ForeignKey(
+        "Airport", on_delete=CASCADE, related_name="routes_from"
+    )
     destination = ForeignKey(
-        "Airport", on_delete=CASCADE, related_name="routes"
+        "Airport", on_delete=CASCADE, related_name="routes_to"
     )
     distance = IntegerField()
