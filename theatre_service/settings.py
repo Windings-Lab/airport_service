@@ -39,6 +39,12 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "theatre.apps.TheatreConfig",
+
+    # 3d-party
+    "rest_framework",
+
+    # apps
+    "theatre"
 ]
 
 MIDDLEWARE = [
