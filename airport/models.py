@@ -37,6 +37,9 @@ class Flight(Model):
         self.full_clean()
         super().save(*args, **kwargs)
 
+    def __str__(self):
+        return f"{self.route.name} ({self.departure_time.strftime("%Y-%m-%d %H:%M:%S")} -> {self.arrival_time.strftime("%Y-%m-%d %H:%M:%S")})"
+
 
 class Crew(Model):
     first_name = CharField(max_length=100)
@@ -105,7 +108,7 @@ class Route(Model):
 
     @property
     def name(self):
-        return f"{self.source.closest_big_city}-{self.destination.closest_big_city}"
+        return f"{self.source.closest_big_city} -> {self.destination.closest_big_city}"
 
     def __str__(self):
         return self.name
