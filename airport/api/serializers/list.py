@@ -7,3 +7,8 @@ class Flight(base.Flight):
     route = CharField(source="route.name", read_only=True)
     airplane = CharField(source="airplane.name", read_only=True)
     crew = SlugRelatedField(many=True, read_only=True, slug_field="full_name")
+
+
+class Route(base.Route):
+    class Meta(base.Route.Meta):
+        fields = ("id", "name", "distance")
