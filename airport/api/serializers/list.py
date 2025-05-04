@@ -9,6 +9,13 @@ class Flight(base.Flight):
     crew = SlugRelatedField(many=True, read_only=True, slug_field="full_name")
 
 
+class Airplane(base.Airplane):
+    airplane_type = CharField(source="airplane_type.name", read_only=True)
+
+    class Meta(base.Airplane.Meta):
+        fields = ("id", "name", "airplane_type", "rows", "seats_in_row")
+
+
 class Route(base.Route):
-    class Meta(base.Route.Meta):
-        fields = ("id", "name", "distance")
+    source = CharField(source="source.closest_big_city", read_only=True)
+    destination = CharField(source="destination.closest_big_city", read_only=True)
