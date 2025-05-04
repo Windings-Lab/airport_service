@@ -38,7 +38,10 @@ class Flight(Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.route.name} ({self.departure_time.strftime("%Y-%m-%d %H:%M:%S")} -> {self.arrival_time.strftime("%Y-%m-%d %H:%M:%S")})"
+        return (
+            f"{self.route.name} ({self.departure_time.strftime("%Y-%m-%d %H:%M:%S")}"
+            f" -> {self.arrival_time.strftime("%Y-%m-%d %H:%M:%S")})"
+        )
 
 
 class Crew(Model):
