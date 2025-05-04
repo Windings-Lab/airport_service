@@ -6,9 +6,14 @@ from airport.api.serializers import (
     list as serializers_list,
     detail as serializers_detail,
 )
+from app.permissions import IsAdminOrIfAuthenticatedReadOnly
 
 
-class Flight(ModelViewSet):
+class BaseViewMixin:
+    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
+
+
+class Flight(BaseViewMixin, ModelViewSet):
     queryset = airport.models.Flight.objects.all()
     serializer_class = serializers_base.Flight
 
@@ -32,12 +37,12 @@ class Flight(ModelViewSet):
         return self.serializer_class
 
 
-class Crew(ModelViewSet):
+class Crew(BaseViewMixin, ModelViewSet):
     queryset = airport.models.Crew.objects.all()
     serializer_class = serializers_base.Crew
 
 
-class Airplane(ModelViewSet):
+class Airplane(BaseViewMixin, ModelViewSet):
     queryset = airport.models.Airplane.objects.all()
     serializer_class = serializers_base.Airplane
 
@@ -51,27 +56,27 @@ class Airplane(ModelViewSet):
         return self.serializer_class
 
 
-class AirplaneType(ModelViewSet):
+class AirplaneType(BaseViewMixin, ModelViewSet):
     queryset = airport.models.AirplaneType.objects.all()
     serializer_class = serializers_base.AirplaneType
 
 
-class Order(ModelViewSet):
+class Order(BaseViewMixin, ModelViewSet):
     queryset = airport.models.Order.objects.all()
     serializer_class = serializers_base.Order
 
 
-class Ticket(ModelViewSet):
+class Ticket(BaseViewMixin, ModelViewSet):
     queryset = airport.models.Ticket.objects.all()
     serializer_class = serializers_base.Ticket
 
 
-class Airport(ModelViewSet):
+class Airport(BaseViewMixin, ModelViewSet):
     queryset = airport.models.Airport.objects.all()
     serializer_class = serializers_base.Airport
 
 
-class Route(ModelViewSet):
+class Route(BaseViewMixin, ModelViewSet):
     queryset = airport.models.Route.objects.all()
     serializer_class = serializers_base.Route
 

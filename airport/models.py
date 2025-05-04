@@ -107,6 +107,9 @@ class Route(Model):
     def name(self):
         return f"{self.source.closest_big_city}-{self.destination.closest_big_city}"
 
+    def __str__(self):
+        return self.name
+
     def clean(self):
         fields_cant_be_same(self.source, self.destination)
 

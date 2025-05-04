@@ -1,5 +1,22 @@
+from datetime import timedelta
+
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        # Modify access token lifetime for admins
+        if user.is_staff or user.is_superuser:
+            token.set_exp(lifetime=timedelta(hours=12))
+        else:
+            token.set_exp(lifetime=timedelta(minutes=5))
+
+        return token
 
 
 class UserSerializer(serializers.ModelSerializer):
