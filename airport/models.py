@@ -103,6 +103,10 @@ class Route(Model):
     destination = ForeignKey("Airport", on_delete=CASCADE, related_name="routes_to")
     distance = IntegerField(validators=[MinValueValidator(1)])
 
+    @property
+    def name(self):
+        return f"{self.source.closest_big_city}-{self.destination.closest_big_city}"
+
     def clean(self):
         fields_cant_be_same(self.source, self.destination)
 
