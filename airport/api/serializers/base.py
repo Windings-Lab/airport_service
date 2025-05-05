@@ -10,7 +10,7 @@ import airport.models
 T = TypeVar("T", bound=models.Model)
 
 
-class BaseAirport(ModelSerializer[T]):
+class BaseAirportSerializer(ModelSerializer[T]):
     """Base serializer for all airport-related models."""
 
     def __init_subclass__(cls, **kwargs):
@@ -25,30 +25,30 @@ class BaseAirport(ModelSerializer[T]):
         fields = "__all__"
 
 
-class Flight(BaseAirport[airport.models.Flight]):
-    class Meta(BaseAirport.Meta):
+class Flight(BaseAirportSerializer[airport.models.Flight]):
+    class Meta(BaseAirportSerializer.Meta):
         model = airport.models.Flight
 
 
-class Crew(BaseAirport[airport.models.Crew]):
-    class Meta(BaseAirport.Meta):
+class Crew(BaseAirportSerializer[airport.models.Crew]):
+    class Meta(BaseAirportSerializer.Meta):
         model = airport.models.Crew
 
 
-class Airplane(BaseAirport[airport.models.Airplane]):
-    class Meta(BaseAirport.Meta):
+class Airplane(BaseAirportSerializer[airport.models.Airplane]):
+    class Meta(BaseAirportSerializer.Meta):
         model = airport.models.Airplane
 
 
-class AirplaneType(BaseAirport[airport.models.AirplaneType]):
-    class Meta(BaseAirport.Meta):
+class AirplaneType(BaseAirportSerializer[airport.models.AirplaneType]):
+    class Meta(BaseAirportSerializer.Meta):
         model = airport.models.AirplaneType
 
 
-class Ticket(BaseAirport[airport.models.Ticket]):
+class Ticket(BaseAirportSerializer[airport.models.Ticket]):
     flight = SlugRelatedField(read_only=True, slug_field="name")
 
-    class Meta(BaseAirport.Meta):
+    class Meta(BaseAirportSerializer.Meta):
         model = airport.models.Ticket
         fields = ("id", "row", "seat", "flight")
 
@@ -71,10 +71,10 @@ class Ticket(BaseAirport[airport.models.Ticket]):
         return data
 
 
-class Order(BaseAirport[airport.models.Order]):
+class Order(BaseAirportSerializer[airport.models.Order]):
     tickets = Ticket(many=True, read_only=True)
 
-    class Meta(BaseAirport.Meta):
+    class Meta(BaseAirportSerializer.Meta):
         model = airport.models.Order
         fields = ("id", "tickets", "created_at")
 
@@ -89,11 +89,11 @@ class Order(BaseAirport[airport.models.Order]):
             return order
 
 
-class Airport(BaseAirport[airport.models.Airport]):
-    class Meta(BaseAirport.Meta):
+class Airport(BaseAirportSerializer[airport.models.Airport]):
+    class Meta(BaseAirportSerializer.Meta):
         model = airport.models.Airport
 
 
-class Route(BaseAirport[airport.models.Route]):
-    class Meta(BaseAirport.Meta):
+class Route(BaseAirportSerializer[airport.models.Route]):
+    class Meta(BaseAirportSerializer.Meta):
         model = airport.models.Route
