@@ -90,6 +90,9 @@ class Order(Model):
         settings.AUTH_USER_MODEL, on_delete=CASCADE, related_name="orders"
     )
 
+    class Meta(TypedModelMeta):
+        ordering = ["-created_at"]
+
 
 class Ticket(Model):
     row = IntegerField()
