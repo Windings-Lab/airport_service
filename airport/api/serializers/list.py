@@ -23,3 +23,7 @@ class Route(base.Route):
 
 class Order(base.Order):
     tickets = base.Ticket(many=True, read_only=True)
+    user = SlugRelatedField(slug_field="email", read_only=True)
+
+    class Meta(base.Order.Meta):
+        fields = base.Order.Meta.fields + ("user",)
