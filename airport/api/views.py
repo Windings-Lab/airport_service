@@ -1,4 +1,5 @@
 from rest_framework.viewsets import ModelViewSet
+from django.db.models import Prefetch
 
 import airport.models
 from airport.api.serializers import (
@@ -35,6 +36,9 @@ class Flight(BaseViewMixin, ModelViewSet):
         if self.action == "retrieve":
             return serializers_detail.Flight
 
+        if self.action == "create":
+            return serializers_post.Flight
+
         return self.serializer_class
 
 
@@ -46,6 +50,13 @@ class Crew(BaseViewMixin, ModelViewSet):
 class Airplane(BaseViewMixin, ModelViewSet):
     queryset = airport.models.Airplane.objects.all()
     serializer_class = serializers_base.Airplane
+
+    def get_queryset(self):
+        queryset = self.queryset
+
+        queryset = queryset.select_related("airplane_type")
+
+        return queryset
 
     def get_serializer_class(self):
         if self.action == "list":
@@ -65,6 +76,19 @@ class AirplaneType(BaseViewMixin, ModelViewSet):
 class Order(BaseViewMixin, ModelViewSet):
     queryset = airport.models.Order.objects.all()
     serializer_class = serializers_base.Order
+
+    def get_queryset(self):
+        queryset = self.queryset
+        ticket_qs = airport.models.Ticket.objects.select_related(
+            "flight__route__source",
+            "flight__route__destination",
+            "flight__route",
+            "flight",
+        )
+        queryset = queryset.select_related("user")
+        queryset = queryset.prefetch_related(Prefetch("tickets", queryset=ticket_qs))
+
+        return queryset
 
     def get_serializer_class(self):
         if self.action == "list":
@@ -98,5 +122,8 @@ class Route(BaseViewMixin, ModelViewSet):
 
         if self.action == "retrieve":
             return serializers_detail.Route
+
+        if self.action == "create":
+            return serializers_post.Route
 
         return self.serializer_class

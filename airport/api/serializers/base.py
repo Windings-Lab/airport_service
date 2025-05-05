@@ -65,11 +65,10 @@ class Ticket(BaseAirport[airport.models.Ticket]):
 
 class Order(BaseAirport[airport.models.Order]):
     tickets = Ticket(many=True, read_only=True)
-    flight = Flight(read_only=True)
 
     class Meta(BaseAirport.Meta):
         model = airport.models.Order
-        fields = ("id", "tickets", "flight", "created_at")
+        fields = ("id", "tickets", "created_at")
 
     def create(self, validated_data):
         with transaction.atomic():

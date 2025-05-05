@@ -12,3 +12,15 @@ class Ticket(base.Ticket):
 
 class Order(base.Order):
     tickets = Ticket(many=True)
+
+
+class Flight(base.Flight):
+    route = PrimaryKeyRelatedField(
+        queryset=airport.models.Route.objects.select_related()
+    )
+
+
+class Route(base.Route):
+    __airport_queryset = list(airport.models.Airport.objects.select_related())
+    source = PrimaryKeyRelatedField(queryset=__airport_queryset)
+    destination = PrimaryKeyRelatedField(queryset=__airport_queryset)

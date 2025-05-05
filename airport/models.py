@@ -35,7 +35,7 @@ class Flight(Model):
     def name(self):
         return (
             f"{self.route.name} ({self.departure_time.strftime("%Y-%m-%d %H:%M:%S")}"
-            f" -> {self.arrival_time.strftime("%Y-%m-%d %H:%M:%S")})"
+            f" → {self.arrival_time.strftime("%Y-%m-%d %H:%M:%S")})"
         )
 
     def clean(self):
@@ -136,7 +136,7 @@ class Route(Model):
 
     @property
     def name(self):
-        return f"{self.source.closest_big_city} -> {self.destination.closest_big_city}"
+        return f"{self.source.closest_big_city} → {self.destination.closest_big_city}"
 
     def __str__(self):
         return self.name
