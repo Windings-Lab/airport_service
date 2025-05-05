@@ -13,6 +13,14 @@ T = TypeVar("T", bound=models.Model)
 class BaseAirport(ModelSerializer[T]):
     """Base serializer for all airport-related models."""
 
+    def __init_subclass__(cls, **kwargs):
+        super().__init_subclass__(**kwargs)
+        meta = getattr(cls, "Meta", None)
+        if meta and not hasattr(meta, "ref_name"):
+            module_name = cls.__module__.split(".")[-1].capitalize()
+            class_name = cls.__name__
+            meta.ref_name = f"{module_name}{class_name}"
+
     class Meta:
         fields = "__all__"
 
