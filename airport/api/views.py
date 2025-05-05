@@ -5,6 +5,7 @@ from airport.api.serializers import (
     base as serializers_base,
     list as serializers_list,
     detail as serializers_detail,
+    post as serializers_post,
 )
 from app.permissions import IsAdminOrIfAuthenticatedReadOnly
 
@@ -65,10 +66,14 @@ class Order(BaseViewMixin, ModelViewSet):
     queryset = airport.models.Order.objects.all()
     serializer_class = serializers_base.Order
 
+    def get_serializer_class(self):
+        if self.action == "list":
+            return serializers_list.Order
 
-class Ticket(BaseViewMixin, ModelViewSet):
-    queryset = airport.models.Ticket.objects.all()
-    serializer_class = serializers_base.Ticket
+        if self.action == "create":
+            return serializers_post.Order
+
+        return self.serializer_class
 
 
 class Airport(BaseViewMixin, ModelViewSet):

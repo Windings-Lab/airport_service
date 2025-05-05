@@ -19,3 +19,7 @@ class Airplane(base.Airplane):
 class Route(base.Route):
     source = CharField(source="source.closest_big_city", read_only=True)
     destination = CharField(source="destination.closest_big_city", read_only=True)
+
+
+class Order(base.Order):
+    tickets = base.Ticket(many=True, read_only=True)

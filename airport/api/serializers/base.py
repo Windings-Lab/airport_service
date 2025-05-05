@@ -1,6 +1,10 @@
-from django.db import models
+from django.db import models, transaction
 from typing import TypeVar
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import (
+    ModelSerializer,
+    ValidationError,
+    SlugRelatedField,
+)
 import airport.models
 
 T = TypeVar("T", bound=models.Model)
@@ -33,14 +37,49 @@ class AirplaneType(BaseAirport[airport.models.AirplaneType]):
         model = airport.models.AirplaneType
 
 
-class Order(BaseAirport[airport.models.Order]):
-    class Meta(BaseAirport.Meta):
-        model = airport.models.Order
-
-
 class Ticket(BaseAirport[airport.models.Ticket]):
+    flight = SlugRelatedField(read_only=True, slug_field="name")
+
     class Meta(BaseAirport.Meta):
         model = airport.models.Ticket
+        fields = ("id", "row", "seat", "flight")
+
+    def validate(self, attrs):
+        data = super().validate(attrs=attrs)
+
+        row = attrs["row"]
+        seat = attrs["seat"]
+        flight: airport.models.Flight = attrs["flight"]
+        airplane: airport.models.Airplane = flight.airplane
+
+        if not (1 <= row <= airplane.rows):
+            raise ValidationError(f"Row should be in range (1, {airplane.rows})")
+
+        if not (1 <= seat <= airplane.seats_in_row):
+            raise ValidationError(
+                f"Seat should be in range (1, {airplane.seats_in_row})"
+            )
+
+        return data
+
+
+class Order(BaseAirport[airport.models.Order]):
+    tickets = Ticket(many=True, read_only=True)
+    flight = Flight(read_only=True)
+
+    class Meta(BaseAirport.Meta):
+        model = airport.models.Order
+        fields = ("id", "tickets", "flight", "created_at")
+
+    def create(self, validated_data):
+        with transaction.atomic():
+            tickets_data = validated_data.pop("tickets")
+            user = self.context["request"].user
+            validated_data["user"] = user
+            order = airport.models.Order.objects.create(**validated_data)
+            for ticket_data in tickets_data:
+                airport.models.Ticket.objects.create(order=order, **ticket_data)
+            return order
 
 
 class Airport(BaseAirport[airport.models.Airport]):
