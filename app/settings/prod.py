@@ -1,6 +1,6 @@
-import os
-
 from .base import *
+
+import os
 
 # Deployment tips
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -13,3 +13,19 @@ SECRET_KEY = os.environ.get(
 )
 
 DEBUG = False
+
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv("DB_NAME"),
+        "USER": os.getenv("DB_USER"),
+        "PASSWORD": os.getenv("DB_PASS"),
+        "HOST": os.getenv("DB_HOST"),
+        "PORT": int(os.environ.get("DB_PORT", 5432)),
+        "OPTIONS": {
+            "sslmode": "require",
+        },
+        "DISABLE_SERVER_SIDE_CURSORS": True
+    }
+}

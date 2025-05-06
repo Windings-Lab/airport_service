@@ -21,6 +21,5 @@ class Flight(base.Flight):
 
 
 class Route(base.Route):
-    __airport_queryset = list(airport.models.Airport.objects.select_related())
-    source = PrimaryKeyRelatedField(queryset=__airport_queryset)
-    destination = PrimaryKeyRelatedField(queryset=__airport_queryset)
+    source = PrimaryKeyRelatedField(queryset=airport.models.Airport.objects.all())
+    destination = PrimaryKeyRelatedField(queryset=airport.models.Airport.objects.all())
