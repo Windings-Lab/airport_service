@@ -1,8 +1,31 @@
 [project]
-name = "theatre-service"
+name = "airport-service"
 version = "0.1.0"
 description = "Add your description here"
 requires-python = ">=3.13"
 dependencies = [
     "django>=5.2",
+    "djangorestframework>=3.16.0",
+    "djangorestframework-simplejwt>=5.5.0",
+    "drf-spectacular>=0.28.0",
+    "psycopg2-binary>=2.9.10",
 ]
+
+[tool.mypy]
+plugins = ["mypy_django_plugin.main"]
+
+[tool.django-stubs]
+
+[dependency-groups]
+dev = [
+    "django-debug-toolbar>=5.2.0",
+    "django-stubs[compatible-mypy]>=5.2.0",
+    "djangorestframework-stubs[compatible-mypy]>=3.16.0",
+    "isort>=6.0.1",
+]
+
+[tool.black]
+line-length = 88
+
+[tool.isort]
+profile = "black"

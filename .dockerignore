@@ -1,0 +1,13 @@
+.venv
+.git
+__pycache__
+.idea
+.mypy_cache
+docs
+templates
+.dockerignore
+.gitignore
+db.sqlite3
+Dockerfile
+tokens
+.env

@@ -1,5 +1,6 @@
-.venv
+db.sqlite3
 .idea
-__ecpycache__
-*.pyc
+.venv
+__pycache__
+tokens
 .env
