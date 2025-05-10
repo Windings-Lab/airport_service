@@ -1,0 +1,29 @@
+name: airport-api
+
+services:
+  web:
+    build: .
+    working_dir: /app
+    restart: always
+    secrets:
+      - django_secret_key
+      - db_password
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    container_name: app
+    networks:
+      - airport-network
+    command: >
+      sh -c "source .venv/bin/activate && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+
+networks:
+  airport-network:
+    name: airport-network
+
+secrets:
+  db_password:
+    environment: "DB_PASS"
+  django_secret_key:
+    environment: "SECRET_KEY"
